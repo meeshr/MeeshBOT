@@ -1,1 +1,79 @@
-{}
+{
+    "307967736846221312": [],
+    "657940862659067945": [],
+    "599272353725284374": [],
+    "205676446709055488": [
+        {
+            "id": 1,
+            "name": "bomb",
+            "image_url": null,
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 2,
+            "name": "kill me",
+            "image_url": null,
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 3,
+            "name": "now",
+            "image_url": null,
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 4,
+            "name": "Car",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548327314335731752/ametrin.png?ex=6aa6a7ae&is=6aa5562e&hm=1d13535d3d9ca86bdaba618493f4b4dae84c896c0758042feb3c5d3cecc5b27d&",
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 5,
+            "name": "Private Jet",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548327682108956793/images.png?ex=6aa6a805&is=6aa55685&hm=1b64de55eb4e5e60b7544af0e887c3a6f3190c0192112ece2c2a6cafe8e72fcd&",
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 6,
+            "name": "LG, 65 inch, OLED evo, 4K Smart TV, AI C5, 144 Hz",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548328289192509520/100419998_100_01.png?ex=6aa6a896&is=6aa55716&hm=b5711c5ecefd5e19ce2e0ad30e6a6d70514ac88398f98f71eee677fc06bd2a33&",
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 7,
+            "name": "Blanket Basket",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548328848570056774/262ADI9900038_1.png?ex=6aa6a91c&is=6aa5579c&hm=b51e5f6a7d7a06b378e78d9b0ec87a00fc7f4935611bca58cadcbc1dc4f2a60a&",
+            "claimed": false,
+            "claimed_by": null
+        }
+    ],
+    "440095388586999811": [
+        {
+            "id": 1,
+            "name": "earings",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548393795874197534/IMG_2211.png?ex=6aa6e598&is=6aa59418&hm=675c39498d0f6a52514a6e61712f78c9cc9f6f388abf76493d196d68d2ca90b1&",
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 2,
+            "name": "makeup",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548875819366224023/IMG_2246.png?ex=6aa8a684&is=6aa75504&hm=5445c141127a488f5ba8b5a84d99f8d67569675564f832ff9538e8c98445e405&",
+            "claimed": false,
+            "claimed_by": null
+        },
+        {
+            "id": 3,
+            "name": "makeup",
+            "image_url": "https://cdn.discordapp.com/ephemeral-attachments/1547704073732751420/1548877046300672080/IMG_2247.png?ex=6aa8a7a8&is=6aa75628&hm=2b7f358b2cda3789333f69d491b95e1b7f069560f9b48a5aaa7a863931f2ea07&",
+            "claimed": false,
+            "claimed_by": null
+        }
+    ]
+}
