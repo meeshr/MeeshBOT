@@ -10,7 +10,7 @@ from aiohttp import web, ClientSession
 # ==========================================================
 # 1. الإعدادات العامة والربط (CONFIGURATION & IDs)
 # ==========================================================
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "MTU0NzY3MDMzNzY5OTcxMzA0NA.GY8C6v.pgsdxvfQypw68r4UARpZlLKpv6AzSCgUEiFfDg")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 GUILD_ID = discord.Object(id=714659822477246534)
 FORUM_CHANNEL_ID = 1547663433850425497
 
