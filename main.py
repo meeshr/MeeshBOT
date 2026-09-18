@@ -1,12 +1,11 @@
 import os
 import json
 import asyncio
-import urllib.request
 import discord
 from discord.ext import commands
 from discord import app_commands
 from discord.ui import View, button, Button
-from aiohttp import web
+from aiohttp import web, ClientSession
 
 # ==========================================================
 # 1. الإعدادات العامة والربط (CONFIGURATION & IDs)
@@ -15,7 +14,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "MTU0NzY3MDMzNzY5OTcxMzA0NA.GY8C6v.pgsdx
 GUILD_ID = discord.Object(id=714659822477246534)
 FORUM_CHANNEL_ID = 1547663433850425497
 
-# إعدادات السحابة (JSONBin) للحفظ الدائم
+# إعدادات السحابة (JSONBin)
 BIN_ID = "6aadacc3ac6210605addddde"
 API_KEY = "$2a$10$sNyGBL9XmGvTjuTxXfaUB.P.qLh1UtkZ7crgdlln24LWcijefCdZ6"
 HEADERS = {
@@ -101,41 +100,38 @@ STATUS_CLAIMED   = f"{EMOJI_LOCK} مع \u202A{{name}}\u202C"
 GUIDE_CHECK_WISHES = f"\n\n\u200Fاختاري رقم الغرض من الأزرار تحت {EMOJI_TULIP}"
 
 # ==========================================================
-# 6. قاعدة البيانات السحابية (JSONBin Cloud DB عبر aiohttp)
+# 6. قاعدة البيانات السحابية (JSONBin Cloud DB)
 # ==========================================================
+wishes_db = {}
+
 async def load_db_async():
     url = f"https://api.jsonbin.io/v3/b/{BIN_ID}/latest"
     try:
-        async with web.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.get(url, headers=HEADERS, timeout=10) as resp:
                 if resp.status == 200:
                     data = await resp.json()
                     record = data.get("record", {})
-                    # إذا كانت البيانات قائمة مباشرة، نحولها لشكل قاموس معرفات
+                    # إذا كانت البيانات مخزنة كقاموس معرفات
                     if isinstance(record, dict):
                         return {int(k): v for k, v in record.items() if str(k).isdigit()}
                     return {}
-                else:
-                    print(f"خطأ جلب البيانات: كود الحالة {resp.status}")
-                    return {}
     except Exception as e:
         print("خطأ قراءة البيانات من السحابة:", e)
-        return {}
+    return {}
 
 async def save_db_async(data):
     url = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
     formatted_data = {str(k): v for k, v in data.items()}
     try:
-        async with web.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.put(url, headers=HEADERS, json=formatted_data, timeout=10) as resp:
-                if resp.status != 200:
-                    print(f"فشل الحفظ في السحابة: كود الحالة {resp.status}")
+                if resp.status == 200:
+                    print("✓ تم الحفظ في JSONBin بنجاح")
                 else:
-                    print("✓ تم حفظ البيانات في السحابة بنجاح")
+                    print(f"فشل الحفظ في JSONBin: status {resp.status}")
     except Exception as e:
         print("خطأ حفظ البيانات في السحابة:", e)
-
-wishes_db = {}
 
 # ==========================================================
 # 7. الأزرار والتفاعلات
@@ -195,7 +191,7 @@ class ClaimWishView(View):
 
             target["claimed"] = True
             target["claimed_by"] = interaction.user.display_name
-            save_db(wishes_db)
+            await save_db_async(wishes_db)
 
             for child in self.children:
                 if isinstance(child, Button) and child.custom_id == f"claim_{self.friend_id}_{item_id}":
@@ -239,7 +235,7 @@ async def on_ready():
     bot.tree.clear_commands(guild=GUILD_ID)
     await bot.tree.sync(guild=GUILD_ID)
     await bot.tree.sync()
-    print(f"Online: {bot.user} | تم تحميل {len(wishes_db)} مستخدم من السحابة")
+    print(f"Online: {bot.user} | Loaded DB users: {len(wishes_db)}")
 
 @bot.event
 async def on_thread_create(thread: discord.Thread):
@@ -250,7 +246,7 @@ async def on_thread_create(thread: discord.Thread):
         if IMG_WELCOME_BANNER:
             embed_banner = discord.Embed(color=COLOR_SOFT_BLUSH)
             embed_banner.set_image(url=IMG_WELCOME_BANNER)
-            embed_list.append(embed_banner)
+            embeds_list.append(embed_banner)
 
         embed_text = discord.Embed(
             description=WELCOME_MESSAGE,
@@ -265,7 +261,7 @@ async def on_thread_create(thread: discord.Thread):
             print(f"Error: {e}")
 
 # ==========================================================
-# 9. أوامر السلاش المحدثة مع رابط الغرض
+# 9. أوامر السلاش
 # ==========================================================
 
 @bot.tree.command(name="add_wish", description="إضافة غرض للـ Wishlist")
@@ -315,7 +311,7 @@ async def add_wish(
         "claimed_by": None
     })
     
-    save_db(wishes_db)
+    await save_db_async(wishes_db)
     
     num_str = format_item_num(item_id)
     title_text = f"[{item_name}]({final_item_url})" if final_item_url else item_name
@@ -418,7 +414,7 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
 
     target_item["claimed"] = False
     target_item["claimed_by"] = None
-    save_db(wishes_db)
+    await save_db_async(wishes_db)
 
     num_str = format_item_num(item_id)
     embed = discord.Embed(
@@ -453,7 +449,7 @@ async def delete_wish(interaction: discord.Interaction, item_id: int):
     for idx, itm in enumerate(items, start=1):
         itm["id"] = idx
 
-    save_db(wishes_db)
+    await save_db_async(wishes_db)
     
     num_str = format_item_num(item_id)
     embed = discord.Embed(
@@ -477,7 +473,7 @@ async def delete_wish(interaction: discord.Interaction, item_id: int):
 async def clear_wishes(interaction: discord.Interaction):
     user_id = interaction.user.id
     wishes_db[user_id] = []
-    save_db(wishes_db)
+    await save_db_async(wishes_db)
 
     embed = discord.Embed(
         description=(
