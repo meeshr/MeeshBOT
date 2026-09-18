@@ -1,6 +1,7 @@
 import os
 import json
 import asyncio
+import urllib.request
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -10,11 +11,17 @@ from aiohttp import web
 # ==========================================================
 # 1. الإعدادات العامة والربط (CONFIGURATION & IDs)
 # ==========================================================
-# ضعي التوكن الجديد هنا بعد إعادة توليده من Developer Portal
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "MTU0NzY3MDMzNzY5OTcxMzA0NA.GY8C6v.pgsdxvfQypw68r4UARpZlLKpv6AzSCgUEiFfDg")
 GUILD_ID = discord.Object(id=714659822477246534)
 FORUM_CHANNEL_ID = 1547663433850425497
-DB_FILE = "wishes_data.json"
+
+# إعدادات السحابة (JSONBin) للحفظ الدائم
+BIN_ID = "6aadacc3ac6210605addddde"
+API_KEY = "$2a$10$sNyGBL9XmGvTjuTxXfaUB.P.qLh1UtkZ7crgdlln24LWcijefCdZ6"
+HEADERS = {
+    "Content-Type": "application/json",
+    "X-Master-Key": API_KEY
+}
 
 # ==========================================================
 # 2. خادم ويب مصغر لمنصة Render
@@ -94,21 +101,32 @@ STATUS_CLAIMED   = f"{EMOJI_LOCK} مع \u202A{{name}}\u202C"
 GUIDE_CHECK_WISHES = f"\n\n\u200Fاختاري رقم الغرض من الأزرار تحت {EMOJI_TULIP}"
 
 # ==========================================================
-# 6. قاعدة البيانات المحلية
+# 6. قاعدة البيانات السحابية (JSONBin Cloud DB)
 # ==========================================================
 def load_db():
-    if not os.path.exists(DB_FILE):
-        return {}
+    req = urllib.request.Request(f"https://api.jsonbin.io/v3/b/{BIN_ID}/latest", headers=HEADERS)
     try:
-        with open(DB_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return {int(k): v for k, v in data.items()}
-    except Exception:
+        with urllib.request.urlopen(req, timeout=10) as res:
+            data = json.loads(res.read().decode())
+            record = data.get("record", {})
+            return {int(k): v for k, v in record.items()}
+    except Exception as e:
+        print("خطأ قراءة البيانات من السحابة:", e)
         return {}
 
 def save_db(data):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+    formatted_data = {str(k): v for k, v in data.items()}
+    req = urllib.request.Request(
+        f"https://api.jsonbin.io/v3/b/{BIN_ID}",
+        data=json.dumps(formatted_data, ensure_ascii=False).encode("utf-8"),
+        headers=HEADERS,
+        method="PUT"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as res:
+            pass
+    except Exception as e:
+        print("خطأ حفظ البيانات في السحابة:", e)
 
 wishes_db = load_db()
 
@@ -223,7 +241,7 @@ async def on_thread_create(thread: discord.Thread):
         if IMG_WELCOME_BANNER:
             embed_banner = discord.Embed(color=COLOR_SOFT_BLUSH)
             embed_banner.set_image(url=IMG_WELCOME_BANNER)
-            embeds_list.append(embed_banner)
+            embed_list.append(embed_banner)
 
         embed_text = discord.Embed(
             description=WELCOME_MESSAGE,
@@ -269,7 +287,6 @@ async def add_wish(
     
     item_id = len(wishes_db[user_id]) + 1
     
-    # التحقق من صحة رابط الشراء
     final_item_url = None
     if item_url and item_url.strip().startswith(("http://", "https://")):
         final_item_url = item_url.strip()
