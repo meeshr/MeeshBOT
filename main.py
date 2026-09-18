@@ -11,7 +11,7 @@ from aiohttp import web
 # 1. الإعدادات العامة والربط (CONFIGURATION & IDs)
 # ==========================================================
 # ضعي التوكن الجديد هنا بعد إعادة توليده من Developer Portal
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "MTU0NzY3MDMzNzY5OTcxMzA0NA.GWZ9Wy.V4VFIKWqwJqXvWqABGEco874SAng0oQVwrKe7s")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "MTU0NzY3MDMzNzY5OTcxMzA0NA.G0n-4G.-tvb7R4KwCcUxAaQqZYbitPxxPMnpZiO2uiOs0")
 GUILD_ID = discord.Object(id=714659822477246534)
 FORUM_CHANNEL_ID = 1547663433850425497
 DB_FILE = "wishes_data.json"
