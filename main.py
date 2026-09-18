@@ -419,7 +419,7 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
     num_str = format_item_num(item_id)
     embed = discord.Embed(
         description=(
-            f"##  تم إلغاء الحجز 🔺 \u200E\n"
+            f"## 🔺 تم إلغاء الحجز  \u200E\n"
             f"### تم إلغاء حجزك للغرض {num_str}\n\n"
             "صار الغرض متاح بالقائمة من جديد للكل"
         ),
