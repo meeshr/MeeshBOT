@@ -52,7 +52,7 @@ COLOR_WARM_WHITE = 0xFFF9F5
 # ==========================================================
 IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481/1547882296122675210/35efc6dcbdf1fdfa3cb1848cf691847f.png?ex=6aa50939&is=6aa3b7b9&hm=58dd5372961d79d39beeae6a6f8162b605178fb653483204883060145bf164d3&"
 IMG_CHECK_BANNER   = None
-IMG_EMPTY_ICON     = https://github.com/meeshr/MeeshBOT/blob/main/93942-pinkloading.gif?raw=true
+IMG_EMPTY_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/93942-pinkloading.gif?raw=true"
 
 IMG_CLAIM_DEFAULT  = "https://github.com/meeshr/MeeshBOT/blob/main/2524-frogconfetti.gif?raw=true"
 IMG_DELETE_ICON    = "https://github.com/meeshr/MeeshBOT/blob/main/2ac346934e344759beacad22c13d9f1f.gif?raw=true"
