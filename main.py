@@ -207,15 +207,15 @@ class ClaimWishView(View):
                     "## \u200Fتم الحجز بنجاح\n\n"
                     f"### \u200Fصار لك الغرض {num_str}\n\n"
                     f"### \u200Fلـ: **{self.friend_name}**\n\n"
-                    f"### \u200F**{target['name']} الغرض** : "
+                    f"### \u200Fالغرض: **{target['name']}**"
                 ),
                 color=COLOR_COZY_BROWN
             )
-            
+
             if target.get("image_url"):
-            embed_success.set_image(url=target["image_url"])
-        elif IMG_CLAIM_DEFAULT:
-            embed_success.set_image(url=IMG_CLAIM_DEFAULT)
+                embed_success.set_image(url=target["image_url"])
+            elif IMG_CLAIM_DEFAULT:
+                embed_success.set_image(url=IMG_CLAIM_DEFAULT)
 
             embed_success.set_footer(text="Wishlist • سرّك في بير")
             await interaction.followup.send(embed=embed_success, ephemeral=True)
