@@ -49,9 +49,9 @@ IMG_CHECK_BANNER   = None
 IMG_EMPTY_ICON     = None
 
 IMG_CLAIM_DEFAULT  = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
-IMG_DELETE_ICON    = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
-IMG_UNCLAIM_ICON   = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
-IMG_CLEAR_ICON     = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
+IMG_DELETE_ICON    = "https://cdn.discordapp.com/attachments/1521473362373775481/1547923780020600873/41467-trash.png"
+IMG_UNCLAIM_ICON   = "https://cdn.discordapp.com/attachments/1521473362373775481/1547922434081169468/69217-sobbing.gif"
+IMG_CLEAR_ICON     = "https://cdn.discordapp.com/attachments/1521473362373775481/1547923494774251651/1121-garbage.gif"
 
 # ==========================================================
 # 5. الترقيم والإيموجيات
