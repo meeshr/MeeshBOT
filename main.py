@@ -207,7 +207,7 @@ class ClaimWishView(View):
                     "## \u200Fتم الحجز بنجاح\n\n"
                     f"### \u200Fصار لك الغرض {num_str}\n\n"
                     f"### \u200Fلـ: **{self.friend_name}**\n\n"
-                    f"### \u200F **{target['name']}** :الغرض"
+                    f"### \u200Fالغرض: **{target['name']}**"
                 ),
                 color=COLOR_COZY_BROWN
             )
