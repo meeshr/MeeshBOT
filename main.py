@@ -48,13 +48,13 @@ COLOR_CREAM      = 0xFFF4E8
 COLOR_WARM_WHITE = 0xFFF9F5
 
 # ==========================================================
-# 4. باليت الصور والبنرات والـ Thumbnails (مطابقة تماماً للمستودع)
+# 4. باليت الصور والبنرات والـ Thumbnails
 # ==========================================================
 IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481/1547882296122675210/35efc6dcbdf1fdfa3cb1848cf691847f.png"
 IMG_CHECK_BANNER   = None
 IMG_EMPTY_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/pinkloading.gif"
 
-IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/trash%20.gif"
+IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/frogconfetti.gif"
 IMG_DELETE_ICON    = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/trash%20.gif"
 IMG_UNCLAIM_ICON   = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/cry.gif"
 IMG_CLEAR_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/clean.gif"
@@ -211,17 +211,13 @@ class ClaimWishView(View):
                 color=COLOR_COZY_BROWN
             )
 
-            # فحص مباشر لرابط الغرض، وإذا لم يتوفر يستخدم الافتراضي فوراً
-            raw_url = target.get("image_url")
-            final_img = None
+            # فحص الرابط وإسناد الصورة مباشرة وبشكل حتمي
+            img_to_show = target.get("image_url")
+            if not img_to_show or not str(img_to_show).strip().startswith("http"):
+                img_to_show = IMG_CLAIM_DEFAULT
 
-            if raw_url and str(raw_url).lower().startswith("http"):
-                final_img = str(raw_url).strip()
-            elif IMG_CLAIM_DEFAULT and str(IMG_CLAIM_DEFAULT).lower().startswith("http"):
-                final_img = str(IMG_CLAIM_DEFAULT).strip()
-
-            if final_img:
-                embed_success.set_image(url=final_img)
+            if img_to_show:
+                embed_success.set_image(url=img_to_show)
 
             embed_success.set_footer(text="Wishlist • سرّك في بير")
             await interaction.followup.send(embed=embed_success, ephemeral=True)
