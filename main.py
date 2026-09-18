@@ -202,6 +202,7 @@ class ClaimWishView(View):
             
             await interaction.response.edit_message(view=self)
 
+           # إنشاء الـ Embed
             embed_success = discord.Embed(
                 description=(
                     "## \u200Fتم الحجز بنجاح\n\n"
@@ -212,12 +213,20 @@ class ClaimWishView(View):
                 color=COLOR_COZY_BROWN
             )
 
-            if target.get("image_url"):
+            # تحديد الصورة الكبيرة (set_image):
+            # نتحقق أولاً من وجود رابط صورة للغرض في قاعدة البيانات
+            if target.get("image_url") and target["image_url"].strip() != "":
+                # إذا وجد رابط نظيف، نستخدمه
                 embed_success.set_image(url=target["image_url"])
-            elif IMG_CLAIM_DEFAULT:
+            elif IMG_CLAIM_DEFAULT and IMG_CLAIM_DEFAULT.strip() != "":
+                # إذا لم يوجد رابط نظيف، نستخدم الصورة الافتراضية
                 embed_success.set_image(url=IMG_CLAIM_DEFAULT)
+            # إذا لم يوجد أي صورة، لا نستدعي set_image أبداً (ديسكورد يمنع استدعاءها بقيم فارغة)
 
+            # تذييل الصفحة (Footer)
             embed_success.set_footer(text="Wishlist • سرّك في بير")
+            
+            # إرسال الرسالة
             await interaction.followup.send(embed=embed_success, ephemeral=True)
 
         return callback
