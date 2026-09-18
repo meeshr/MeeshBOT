@@ -335,7 +335,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
     is_owner = (interaction.user.id == friend.id)
     items = wishes_db.get(friend.id, [])
 
-   if not items:
+    if not items:
         embed_empty = discord.Embed(
             description=f"## \u200F{EMOJI_SPARKLE} القائمة فاضية\n### \u200Fما بعد انضافت أي أغراض",
             color=COLOR_CREAM
