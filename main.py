@@ -57,7 +57,7 @@ IMG_EMPTY_ICON     = None
 IMG_CLAIM_DEFAULT  = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
 IMG_DELETE_ICON    = "https://cdn.discordapp.com/attachments/1521473362373775481/1547923780020600873/41467-trash.png"
 IMG_UNCLAIM_ICON   = "https://cdn.discordapp.com/attachments/1521473362373775481/1547922434081169468/69217-sobbing.gif"
-IMG_CLEAR_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/4b303136613d9ff2b69d8d86a7ecc157a6a041be/1121-garbage.gif"
+IMG_CLEAR_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/1121-garbage.gif?raw=true"
 
 # ==========================================================
 # 5. الترقيم والإيموجيات
