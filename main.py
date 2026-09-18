@@ -52,12 +52,12 @@ COLOR_WARM_WHITE = 0xFFF9F5
 # ==========================================================
 IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481/1547882296122675210/35efc6dcbdf1fdfa3cb1848cf691847f.png?ex=6aa50939&is=6aa3b7b9&hm=58dd5372961d79d39beeae6a6f8162b605178fb653483204883060145bf164d3&"
 IMG_CHECK_BANNER   = None
-IMG_EMPTY_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/93942-pinkloading.gif?raw=true"
+IMG_EMPTY_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/pinkloading.gif?raw=true"
 
-IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/2524-frogconfetti.gif"
-IMG_DELETE_ICON    = "https://github.com/meeshr/MeeshBOT/blob/main/2ac346934e344759beacad22c13d9f1f.gif?raw=true"
-IMG_UNCLAIM_ICON   = "https://github.com/meeshr/MeeshBOT/blob/main/69217-sobbing.gif?raw=true"
-IMG_CLEAR_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/1121-garbage.gif?raw=true"
+IMG_CLAIM_DEFAULT  = "https://github.com/meeshr/MeeshBOT/blob/main/frogconfetti.gif?raw=true"
+IMG_DELETE_ICON    = "https://github.com/meeshr/MeeshBOT/blob/main/trash%20.gif?raw=true"
+IMG_UNCLAIM_ICON   = "https://github.com/meeshr/MeeshBOT/blob/main/cry.gif?raw=true"
+IMG_CLEAR_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/clean.gif?raw=true"
 
 # ==========================================================
 # 5. الترقيم والإيموجيات
@@ -207,7 +207,7 @@ class ClaimWishView(View):
                     "## \u200Fتم الحجز بنجاح\n\n"
                     f"### \u200Fصار لك الغرض {num_str}\n\n"
                     f"### \u200Fلـ: **{self.friend_name}**\n\n"
-                    f"### \u200Fالغرض: **{target['name']}**"
+                    f"### \u200F **{target['name']}** :الغرض"
                 ),
                 color=COLOR_COZY_BROWN
             )
@@ -337,7 +337,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
 
     if not items:
         embed_empty = discord.Embed(
-            description=f"## \u200F القائمة فاضية {EMOJI_SPARKLE} \n### \u200Fما بعد انضافت أي أغراض",
+            description=f"## \u200F {EMOJI_SPARKLE} القائمة فاضية  \n### \u200Fما بعد انضافت أي أغراض",
             color=COLOR_CREAM
         )
         if IMG_EMPTY_ICON:
@@ -419,7 +419,7 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
     num_str = format_item_num(item_id)
     embed = discord.Embed(
         description=(
-            f"## {EMOJI_SPARKLE} تم إلغاء الحجز \u200E\n"
+            f"##  تم إلغاء الحجز 🔺 \u200E\n"
             f"### تم إلغاء حجزك للغرض {num_str}\n\n"
             "صار الغرض متاح بالقائمة من جديد للكل"
         ),
