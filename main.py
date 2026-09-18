@@ -54,7 +54,7 @@ IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481
 IMG_CHECK_BANNER   = None
 IMG_EMPTY_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/93942-pinkloading.gif?raw=true"
 
-IMG_CLAIM_DEFAULT  = "https://github.com/meeshr/MeeshBOT/blob/main/2524-frogconfetti.gif?raw=true"
+IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/2524-frogconfetti.gif"
 IMG_DELETE_ICON    = "https://github.com/meeshr/MeeshBOT/blob/main/2ac346934e344759beacad22c13d9f1f.gif?raw=true"
 IMG_UNCLAIM_ICON   = "https://github.com/meeshr/MeeshBOT/blob/main/69217-sobbing.gif?raw=true"
 IMG_CLEAR_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/1121-garbage.gif?raw=true"
@@ -207,15 +207,15 @@ class ClaimWishView(View):
                     "## \u200Fتم الحجز بنجاح\n\n"
                     f"### \u200Fصار لك الغرض {num_str}\n\n"
                     f"### \u200Fلـ: **{self.friend_name}**\n\n"
-                    f"### \u200Fالغرض: **{target['name']}**"
+                    f"### \u200F**{target['name']} الغرض** : "
                 ),
                 color=COLOR_COZY_BROWN
             )
             
             if target.get("image_url"):
-                embed_success.set_thumbnail(url=target["image_url"])
-            elif IMG_CLAIM_DEFAULT:
-                embed_success.set_thumbnail(url=IMG_CLAIM_DEFAULT)
+            embed_success.set_image(url=target["image_url"])
+        elif IMG_CLAIM_DEFAULT:
+            embed_success.set_image(url=IMG_CLAIM_DEFAULT)
 
             embed_success.set_footer(text="Wishlist • سرّك في بير")
             await interaction.followup.send(embed=embed_success, ephemeral=True)
@@ -337,7 +337,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
 
     if not items:
         embed_empty = discord.Embed(
-            description=f"## \u200F{EMOJI_SPARKLE} القائمة فاضية\n### \u200Fما بعد انضافت أي أغراض",
+            description=f"## \u200F القائمة فاضية {EMOJI_SPARKLE} \n### \u200Fما بعد انضافت أي أغراض",
             color=COLOR_CREAM
         )
         if IMG_EMPTY_ICON:
@@ -370,7 +370,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
 
     desc_lines = [
         f"## Wishlist \u200E{EMOJI_SPARKLE}",
-        f"### {friend.display_name} تصفح لقائمة لـ \u202A\u202C\n"
+        f"###  تصفح لقائمة لـ {friend.display_name} \u202A\u202C\n"
     ]
     for itm in items:
         status = STATUS_CLAIMED.format(name=itm['claimed_by']) if itm["claimed"] else STATUS_AVAILABLE
@@ -421,7 +421,6 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
         description=(
             f"## {EMOJI_SPARKLE} تم إلغاء الحجز \u200E\n"
             f"### تم إلغاء حجزك للغرض {num_str}\n\n"
-            f"> {friend.display_name} لـ: \u202A****\u202C\n\n"
             "صار الغرض متاح بالقائمة من جديد للكل"
         ),
         color=COLOR_MILK_TEA
@@ -464,7 +463,7 @@ async def delete_wish(interaction: discord.Interaction, item_id: int):
     if removed_image:
         embed.set_image(url=removed_image)
     elif IMG_DELETE_ICON:
-        embed.set_thumbnail(url=IMG_DELETE_ICON)
+        embed.set_image(url=IMG_DELETE_ICON)
 
     embed.set_footer(text="Wishlist")
     await interaction.response.send_message(embed=embed, ephemeral=True)
