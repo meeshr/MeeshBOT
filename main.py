@@ -211,12 +211,17 @@ class ClaimWishView(View):
                 color=COLOR_COZY_BROWN
             )
 
-            # التحقق الصارم من رابط الصورة
-            item_pic = target.get("image_url")
-            if item_pic and isinstance(item_pic, str) and item_pic.strip().startswith(("http://", "https://")):
-                embed_success.set_image(url=item_pic.strip())
-            elif IMG_CLAIM_DEFAULT:
-                embed_success.set_image(url=IMG_CLAIM_DEFAULT)
+            # فحص مباشر لرابط الغرض، وإذا لم يتوفر يستخدم الافتراضي فوراً
+            raw_url = target.get("image_url")
+            final_img = None
+
+            if raw_url and str(raw_url).lower().startswith("http"):
+                final_img = str(raw_url).strip()
+            elif IMG_CLAIM_DEFAULT and str(IMG_CLAIM_DEFAULT).lower().startswith("http"):
+                final_img = str(IMG_CLAIM_DEFAULT).strip()
+
+            if final_img:
+                embed_success.set_image(url=final_img)
 
             embed_success.set_footer(text="Wishlist • سرّك في بير")
             await interaction.followup.send(embed=embed_success, ephemeral=True)
