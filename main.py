@@ -52,11 +52,11 @@ COLOR_WARM_WHITE = 0xFFF9F5
 # ==========================================================
 IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481/1547882296122675210/35efc6dcbdf1fdfa3cb1848cf691847f.png?ex=6aa50939&is=6aa3b7b9&hm=58dd5372961d79d39beeae6a6f8162b605178fb653483204883060145bf164d3&"
 IMG_CHECK_BANNER   = None
-IMG_EMPTY_ICON     = None
+IMG_EMPTY_ICON     = https://github.com/meeshr/MeeshBOT/blob/main/93942-pinkloading.gif?raw=true
 
-IMG_CLAIM_DEFAULT  = "https://cdn.discordapp.com/emojis/1547879392401956864.gif"
-IMG_DELETE_ICON    = "https://cdn.discordapp.com/attachments/1521473362373775481/1547923780020600873/41467-trash.png"
-IMG_UNCLAIM_ICON   = "https://cdn.discordapp.com/attachments/1521473362373775481/1547922434081169468/69217-sobbing.gif"
+IMG_CLAIM_DEFAULT  = "https://github.com/meeshr/MeeshBOT/blob/main/2524-frogconfetti.gif?raw=true"
+IMG_DELETE_ICON    = "https://github.com/meeshr/MeeshBOT/blob/main/2ac346934e344759beacad22c13d9f1f.gif?raw=true"
+IMG_UNCLAIM_ICON   = "https://github.com/meeshr/MeeshBOT/blob/main/69217-sobbing.gif?raw=true"
 IMG_CLEAR_ICON     = "https://github.com/meeshr/MeeshBOT/blob/main/1121-garbage.gif?raw=true"
 
 # ==========================================================
@@ -204,10 +204,10 @@ class ClaimWishView(View):
 
             embed_success = discord.Embed(
                 description=(
-                    "## تم الحجز بنجاح\n"
-                    f"### صار لك الغرض {num_str}\n\n"
-                    f"> لـ: \u202A**{self.friend_name}**\u202C\n\n"
-                    f"**الغرض:** {target['name']}"
+                    "## \u200Fتم الحجز بنجاح\n\n"
+                    f"### \u200Fصار لك الغرض {num_str}\n\n"
+                    f"### \u200Fلـ: **{self.friend_name}**\n\n"
+                    f"### \u200Fالغرض: **{target['name']}**"
                 ),
                 color=COLOR_COZY_BROWN
             )
@@ -335,19 +335,19 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
     is_owner = (interaction.user.id == friend.id)
     items = wishes_db.get(friend.id, [])
 
-    if not items:
+   if not items:
         embed_empty = discord.Embed(
-            description=f"## القائمة فاضية \u200E\n### {EMOJI_SPARKLE} ما بعد انضافت أي أغراض ",
+            description=f"## \u200F{EMOJI_SPARKLE} القائمة فاضية\n### \u200Fما بعد انضافت أي أغراض",
             color=COLOR_CREAM
         )
         if IMG_EMPTY_ICON:
-            embed_empty.set_thumbnail(url=IMG_EMPTY_ICON)
+            embed_empty.set_image(url=IMG_EMPTY_ICON)
         await interaction.response.send_message(embed=embed_empty, ephemeral=True)
         return
 
     if is_owner:
         desc_lines = [
-            f"## Wishlist الخاصة بك \u200E{EMOJI_SPARKLE}",
+            f"## {EMOJI_SPARKLE} Wishlist الخاصة بك \u200E",
             "### مراجعة لأغراضك المسجلة\n"
         ]
         for itm in items:
@@ -364,13 +364,13 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
         if IMG_CHECK_BANNER:
             embed.set_image(url=IMG_CHECK_BANNER)
 
-        embed.set_footer(text="Wishlist • حالة الأغراض مخفية عنك للمفاجأة 🤫")
+        embed.set_footer(text="Wishlist • 🤫 حالة الأغراض مخفية عنك للمفاجأة ")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     desc_lines = [
         f"## Wishlist \u200E{EMOJI_SPARKLE}",
-        f"### تصفح لقائمة لـ \u202A{friend.display_name}\u202C\n"
+        f"### {friend.display_name} تصفح لقائمة لـ \u202A\u202C\n"
     ]
     for itm in items:
         status = STATUS_CLAIMED.format(name=itm['claimed_by']) if itm["claimed"] else STATUS_AVAILABLE
@@ -419,15 +419,15 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
     num_str = format_item_num(item_id)
     embed = discord.Embed(
         description=(
-            f"## تم إلغاء الحجز \u200E{EMOJI_SPARKLE}\n"
+            f"## {EMOJI_SPARKLE} تم إلغاء الحجز \u200E\n"
             f"### تم إلغاء حجزك للغرض {num_str}\n\n"
-            f"> لـ: \u202A**{friend.display_name}**\u202C\n\n"
+            f"> {friend.display_name} لـ: \u202A****\u202C\n\n"
             "صار الغرض متاح بالقائمة من جديد للكل"
         ),
         color=COLOR_MILK_TEA
     )
     if IMG_UNCLAIM_ICON:
-        embed.set_thumbnail(url=IMG_UNCLAIM_ICON)
+        embed.set_image(url=IMG_UNCLAIM_ICON)
 
     embed.set_footer(text="Wishlist")
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -454,7 +454,7 @@ async def delete_wish(interaction: discord.Interaction, item_id: int):
     num_str = format_item_num(item_id)
     embed = discord.Embed(
         description=(
-            f"## تم الحذف بنجاح \u200E{EMOJI_SPARKLE}\n"
+            f"## {EMOJI_SPARKLE} تم الحذف بنجاح \u200E\n"
             f"### تم حذف الغرض {num_str}\n\n"
             "> تم تحديث وترتيب أرقام قائمتك تلقائياً"
         ),
@@ -462,7 +462,7 @@ async def delete_wish(interaction: discord.Interaction, item_id: int):
     )
 
     if removed_image:
-        embed.set_thumbnail(url=removed_image)
+        embed.set_image(url=removed_image)
     elif IMG_DELETE_ICON:
         embed.set_thumbnail(url=IMG_DELETE_ICON)
 
