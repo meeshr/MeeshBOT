@@ -209,18 +209,13 @@ class ClaimWishView(View):
                     f"### \u200Fالغرض: **{target['name']}**"
                 ),
                 color=COLOR_COZY_BROWN
-            )
+           )
+    if IMG_UNCLAIM_ICON:
+        embed.set_image(url=IMG_CLAIM_DEFAULT)
 
-            # فحص الرابط وإسناد الصورة مباشرة وبشكل حتمي
-            img_to_show = target.get("image_url")
-            if not img_to_show or not str(img_to_show).strip().startswith("http"):
-                img_to_show = IMG_CLAIM_DEFAULT
+    embed.set_footer(text="Wishlist")
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
-            if img_to_show:
-                embed_success.set_image(url=img_to_show)
-
-            embed_success.set_footer(text="Wishlist • سرّك في بير")
-            await interaction.followup.send(embed=embed_success, ephemeral=True)
 
         return callback
 
