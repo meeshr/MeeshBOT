@@ -477,13 +477,13 @@ async def clear_wishes(interaction: discord.Interaction):
 
     embed = discord.Embed(
         description=(
-            f"## تم تصفير القائمة \u200E{EMOJI_SPARKLE}\n"
+            f"## {EMOJI_SPARKLE} تم تصفير القائمة \u200E\n"
             "### قائمتك الآن فاضية وجاهزة للبداية من جديد"
         ),
         color=COLOR_COZY_BROWN
     )
     if IMG_CLEAR_ICON:
-        embed.set_thumbnail(url=IMG_CLEAR_ICON)
+        embed.set_image(url=IMG_CLEAR_ICON)
 
     embed.set_footer(text="Wishlist")
     await interaction.response.send_message(embed=embed, ephemeral=True)
