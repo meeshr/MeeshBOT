@@ -1,3 +1,17 @@
+from aiohttp import web
+
+async def handle(request):
+    return web.Response(text="Bot is running!")
+
+async def start_web_server():
+    app = web.Application()
+    app.router.add_get('/', handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 8080))
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+  
 import os
 import json
 import asyncio
@@ -450,4 +464,10 @@ async def clear_wishes(interaction: discord.Interaction):
 # ==========================================================
 # 11. تشغيل البوت (RUN BOT)
 # ==========================================================
+async def main():
+    await start_web_server()
+    await bot.start(BOT_TOKEN)
+
+asyncio.run(main())
+
 bot.run(BOT_TOKEN)
