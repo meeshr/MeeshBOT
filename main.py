@@ -101,34 +101,41 @@ STATUS_CLAIMED   = f"{EMOJI_LOCK} مع \u202A{{name}}\u202C"
 GUIDE_CHECK_WISHES = f"\n\n\u200Fاختاري رقم الغرض من الأزرار تحت {EMOJI_TULIP}"
 
 # ==========================================================
-# 6. قاعدة البيانات السحابية (JSONBin Cloud DB)
+# 6. قاعدة البيانات السحابية (JSONBin Cloud DB عبر aiohttp)
 # ==========================================================
-def load_db():
-    req = urllib.request.Request(f"https://api.jsonbin.io/v3/b/{BIN_ID}/latest", headers=HEADERS)
+async def load_db_async():
+    url = f"https://api.jsonbin.io/v3/b/{BIN_ID}/latest"
     try:
-        with urllib.request.urlopen(req, timeout=10) as res:
-            data = json.loads(res.read().decode())
-            record = data.get("record", {})
-            return {int(k): v for k, v in record.items()}
+        async with web.ClientSession() as session:
+            async with session.get(url, headers=HEADERS, timeout=10) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    record = data.get("record", {})
+                    # إذا كانت البيانات قائمة مباشرة، نحولها لشكل قاموس معرفات
+                    if isinstance(record, dict):
+                        return {int(k): v for k, v in record.items() if str(k).isdigit()}
+                    return {}
+                else:
+                    print(f"خطأ جلب البيانات: كود الحالة {resp.status}")
+                    return {}
     except Exception as e:
         print("خطأ قراءة البيانات من السحابة:", e)
         return {}
 
-def save_db(data):
+async def save_db_async(data):
+    url = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
     formatted_data = {str(k): v for k, v in data.items()}
-    req = urllib.request.Request(
-        f"https://api.jsonbin.io/v3/b/{BIN_ID}",
-        data=json.dumps(formatted_data, ensure_ascii=False).encode("utf-8"),
-        headers=HEADERS,
-        method="PUT"
-    )
     try:
-        with urllib.request.urlopen(req, timeout=10) as res:
-            pass
+        async with web.ClientSession() as session:
+            async with session.put(url, headers=HEADERS, json=formatted_data, timeout=10) as resp:
+                if resp.status != 200:
+                    print(f"فشل الحفظ في السحابة: كود الحالة {resp.status}")
+                else:
+                    print("✓ تم حفظ البيانات في السحابة بنجاح")
     except Exception as e:
         print("خطأ حفظ البيانات في السحابة:", e)
 
-wishes_db = load_db()
+wishes_db = {}
 
 # ==========================================================
 # 7. الأزرار والتفاعلات
@@ -227,10 +234,12 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
+    global wishes_db
+    wishes_db = await load_db_async()
     bot.tree.clear_commands(guild=GUILD_ID)
     await bot.tree.sync(guild=GUILD_ID)
     await bot.tree.sync()
-    print(f"Online: {bot.user}")
+    print(f"Online: {bot.user} | تم تحميل {len(wishes_db)} مستخدم من السحابة")
 
 @bot.event
 async def on_thread_create(thread: discord.Thread):
