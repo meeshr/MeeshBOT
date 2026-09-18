@@ -54,7 +54,7 @@ IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481
 IMG_CHECK_BANNER   = None
 IMG_EMPTY_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/pinkloading.gif"
 
-IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/frogconfetti.gif"
+IMG_CLAIM_DEFAULT  = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/trash%20.gif"
 IMG_DELETE_ICON    = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/trash%20.gif"
 IMG_UNCLAIM_ICON   = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/cry.gif"
 IMG_CLEAR_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/clean.gif"
