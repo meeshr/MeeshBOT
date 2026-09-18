@@ -48,7 +48,7 @@ COLOR_CREAM      = 0xFFF4E8
 COLOR_WARM_WHITE = 0xFFF9F5
 
 # ==========================================================
-# 4. باليت الصور والبنرات والـ Thumbnails
+# 4. باليت الصور والبنرات والـ Thumbnails (مطابقة تماماً للمستودع)
 # ==========================================================
 IMG_WELCOME_BANNER = "https://cdn.discordapp.com/attachments/1521473362373775481/1547882296122675210/35efc6dcbdf1fdfa3cb1848cf691847f.png"
 IMG_CHECK_BANNER   = None
@@ -112,7 +112,6 @@ async def load_db_async():
                 if resp.status == 200:
                     data = await resp.json()
                     record = data.get("record", {})
-                    # إذا كانت البيانات مخزنة كقاموس معرفات
                     if isinstance(record, dict):
                         return {int(k): v for k, v in record.items() if str(k).isdigit()}
                     return {}
@@ -202,7 +201,6 @@ class ClaimWishView(View):
             
             await interaction.response.edit_message(view=self)
 
-           # إنشاء الـ Embed
             embed_success = discord.Embed(
                 description=(
                     "## \u200Fتم الحجز بنجاح\n\n"
@@ -213,20 +211,14 @@ class ClaimWishView(View):
                 color=COLOR_COZY_BROWN
             )
 
-            # تحديد الصورة الكبيرة (set_image):
-            # نتحقق أولاً من وجود رابط صورة للغرض في قاعدة البيانات
-            if target.get("image_url") and target["image_url"].strip() != "":
-                # إذا وجد رابط نظيف، نستخدمه
-                embed_success.set_image(url=target["image_url"])
-            elif IMG_CLAIM_DEFAULT and IMG_CLAIM_DEFAULT.strip() != "":
-                # إذا لم يوجد رابط نظيف، نستخدم الصورة الافتراضية
+            # التحقق الصارم من رابط الصورة
+            item_pic = target.get("image_url")
+            if item_pic and isinstance(item_pic, str) and item_pic.strip().startswith(("http://", "https://")):
+                embed_success.set_image(url=item_pic.strip())
+            elif IMG_CLAIM_DEFAULT:
                 embed_success.set_image(url=IMG_CLAIM_DEFAULT)
-            # إذا لم يوجد أي صورة، لا نستدعي set_image أبداً (ديسكورد يمنع استدعاءها بقيم فارغة)
 
-            # تذييل الصفحة (Footer)
             embed_success.set_footer(text="Wishlist • سرّك في بير")
-            
-            # إرسال الرسالة
             await interaction.followup.send(embed=embed_success, ephemeral=True)
 
         return callback
@@ -282,8 +274,8 @@ async def on_thread_create(thread: discord.Thread):
 )
 async def add_wish(
     interaction: discord.Interaction, 
-    item_name: str,
-    item_url: str = None,
+    item_name: str, 
+    item_url: str = None, 
     image_file: discord.Attachment = None, 
     image_link: str = None
 ):
@@ -346,7 +338,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
 
     if not items:
         embed_empty = discord.Embed(
-            description=f"## \u200F {EMOJI_SPARKLE} القائمة فاضية  \n### \u200Fما بعد انضافت أي أغراض",
+            description=f"## \u200F{EMOJI_SPARKLE} القائمة فاضية\n### \u200Fما بعد انضافت أي أغراض",
             color=COLOR_CREAM
         )
         if IMG_EMPTY_ICON:
