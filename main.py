@@ -210,8 +210,8 @@ class ClaimWishView(View):
                 ),
                 color=COLOR_COZY_BROWN
             )
-            if IMG_UNCLAIM_ICON:
-        embed.set_image(url=IMG_CLAIM_DEFAULT)
+            if IMG_CLAIM_DEFAULT:
+                embed_success.set_image(url=IMG_CLAIM_DEFAULT)
 
     embed.set_footer(text="Wishlist • سرّك في بير")
     await interaction.followup.send(embed=embed_success, ephemeral=True)
