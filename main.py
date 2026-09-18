@@ -238,17 +238,20 @@ async def on_thread_create(thread: discord.Thread):
             print(f"Error: {e}")
 
 # ==========================================================
-# 9. أوامر السلاش
+# 9. أوامر السلاش المحدثة مع رابط الغرض
 # ==========================================================
+
 @bot.tree.command(name="add_wish", description="إضافة غرض للـ Wishlist")
 @app_commands.describe(
-    item_name="الرابط أو التفاصيل",
-    image_file="صورة (اختياري)",
+    item_name="اسم الغرض أو وصفه",
+    item_url="رابط الشراء أو صفحة المنتج (اختياري)",
+    image_file="صورة للغرض (اختياري)",
     image_link="رابط صورة مباشر (اختياري)"
 )
 async def add_wish(
     interaction: discord.Interaction, 
-    item_name: str, 
+    item_name: str,
+    item_url: str = None,
     image_file: discord.Attachment = None, 
     image_link: str = None
 ):
@@ -266,6 +269,11 @@ async def add_wish(
     
     item_id = len(wishes_db[user_id]) + 1
     
+    # التحقق من صحة رابط الشراء
+    final_item_url = None
+    if item_url and item_url.strip().startswith(("http://", "https://")):
+        final_item_url = item_url.strip()
+
     final_image_url = None
     if image_file:
         final_image_url = image_file.url
@@ -275,6 +283,7 @@ async def add_wish(
     wishes_db[user_id].append({
         "id": item_id,
         "name": item_name,
+        "item_url": final_item_url,
         "image_url": final_image_url,
         "claimed": False,
         "claimed_by": None
@@ -283,8 +292,10 @@ async def add_wish(
     save_db(wishes_db)
     
     num_str = format_item_num(item_id)
+    title_text = f"[{item_name}]({final_item_url})" if final_item_url else item_name
+    
     embed = discord.Embed(
-        description=f"## تم إضافة الغرض \u200E{EMOJI_SPARKLE}\n### {num_str} — {item_name}",
+        description=f"## {EMOJI_SPARKLE} تم إضافة الغرض \u200E\n### {num_str} — {title_text}",
         color=COLOR_LIGHT_PINK
     )
     embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
@@ -295,6 +306,7 @@ async def add_wish(
     embed.set_footer(text="Wishlist")
     await interaction.response.send_message(embed=embed)
 
+
 @bot.tree.command(name="check_wishes", description="تصفح Wishlist")
 @app_commands.describe(friend="صاحبة الـ Wishlist")
 async def check_wishes(interaction: discord.Interaction, friend: discord.Member):
@@ -303,7 +315,7 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
 
     if not items:
         embed_empty = discord.Embed(
-            description=f"## القائمة فاضية \u200E{EMOJI_SPARKLE}\n### ما بعد انضافت أي أغراض هنا",
+            description=f"## القائمة فاضية \u200E\n### {EMOJI_SPARKLE} ما بعد انضافت أي أغراض ",
             color=COLOR_CREAM
         )
         if IMG_EMPTY_ICON:
@@ -317,9 +329,10 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
             "### مراجعة لأغراضك المسجلة\n"
         ]
         for itm in items:
+            name_display = f"[{itm['name']}]({itm['item_url']})" if itm.get("item_url") else itm['name']
             img_link = f" • [صورة]({itm['image_url']})" if itm.get("image_url") else ""
             num_str = format_item_num(itm['id'])
-            desc_lines.append(f"**{num_str}** {itm['name']}{img_link}")
+            desc_lines.append(f"**{num_str}** {name_display}{img_link}")
 
         embed = discord.Embed(
             description="\n".join(desc_lines),
@@ -339,9 +352,10 @@ async def check_wishes(interaction: discord.Interaction, friend: discord.Member)
     ]
     for itm in items:
         status = STATUS_CLAIMED.format(name=itm['claimed_by']) if itm["claimed"] else STATUS_AVAILABLE
+        name_display = f"[{itm['name']}]({itm['item_url']})" if itm.get("item_url") else itm['name']
         img_link = f" • [صورة]({itm['image_url']})" if itm.get("image_url") else ""
         num_str = format_item_num(itm['id'])
-        desc_lines.append(f"**{num_str}** {itm['name']}{img_link}\n> {status}\n")
+        desc_lines.append(f"**{num_str}** {name_display}{img_link}\n> {status}\n")
 
     desc_lines.append(GUIDE_CHECK_WISHES)
 
@@ -369,7 +383,7 @@ async def unclaim_wish(interaction: discord.Interaction, friend: discord.Member,
         return
 
     if not target_item["claimed"]:
-        await interaction.response.send_message("هذا الغرض أصلاً مو محجوز ومتاح للجميع", ephemeral=True)
+        await interaction.response.send_message("هذا الغرض مو محجوز ومتاح للجميع", ephemeral=True)
         return
 
     if target_item.get("claimed_by") != interaction.user.display_name:
