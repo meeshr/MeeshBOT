@@ -81,6 +81,7 @@ EMOJI_LOCK        = "<:822050lock:1547911158525071452>"
 EMOJI_TULIP       = "<:26725tulip:1547911001289261096>"
 EMOJI_CLOSE       = "<:814373redtick:1547911458229194772>"
 EMOJI_HEART       = "<:7443pinkheart:1547911767684808745>"
+EMOJI_flowerpink  = <:3214flowerpink:1550668178508615711>
 
 WELCOME_MESSAGE = f"""## سجلي هنا كل شيء يعجبك، خاطرك فيه، أو تفكرين تشترينه
 
@@ -492,9 +493,10 @@ async def my_claims(interaction: discord.Interaction):
     my_claimed_items = []
 
     # البحث في جميع القوائم عن الأغراض المحجوزة باسم المستخدم الحالي
+    # البحث في جميع القوائم عن الأغراض المحجوزة
     for friend_id, items in wishes_db.items():
-        friend_member = interaction.guild.get_member(friend_id)
-        friend_display = friend_member.display_name if friend_member else f"المستخدم ({friend_id})"
+        # ديسكورد سيحول المنشن تلقائياً لاسم العضوة الحقيقي
+        friend_mention = f"<@{friend_id}>"
         
         for itm in items:
             if itm.get("claimed") and itm.get("claimed_by") == user_name:
@@ -503,31 +505,30 @@ async def my_claims(interaction: discord.Interaction):
                     "name": itm["name"],
                     "url": itm.get("item_url"),
                     "img": itm.get("image_url"),
-                    "friend": friend_display
+                    "friend": friend_mention
                 })
-
     # في حال لم يتم حجز أي غرض بعد
     if not my_claimed_items:
         embed_empty = discord.Embed(
             description=f"## \u200F{EMOJI_SPARKLE} ما حجزتي شيء بعد\n### \u200Fتصفحي قوائم صديقاتك واحجزي أغراض تسعدهم!",
             color=COLOR_CREAM
         )
-        if IMG_EMPTY_ICON:
-            embed_empty.set_thumbnail(url=IMG_EMPTY_ICON)
+        if IMG_UNCLAIM_ICON:
+            embed_empty.set_image(url=IMG_UNCLAIM_ICON)
         await interaction.response.send_message(embed=embed_empty, ephemeral=True)
         return
 
     # بناء نص الرسالة للأغراض المحجوزة
     desc_lines = [
-        f"## {EMOJI_HEART} الأغراض اللي حجزتيها \u200E",
-        "### قائمة بكل الأغراض المحجوزة تحت اسمك:\n"
+        f"## {EMOJI_flowerpink} الأغراض اللي حجزتيها \u200E",
+        "### : قائمة بكل الأغراض المحجوزة تحت اسمك\n"
     ]
 
     for item in my_claimed_items:
         num_str = format_item_num(item["id"])
         item_text = f"[{item['name']}]({item['url']})" if item["url"] else item["name"]
         img_text = f" • [صورة]({item['img']})" if item["img"] else ""
-        desc_lines.append(f"• الغرض {num_str}: **{item_text}**{img_text}\n  > لـ: **{item['friend']}**\n")
+        desc_lines.append(f"• \u200Fالغرض {num_str}: **{item_text}**{img_text}\n  > \u200Fلـ: {item['friend']}\n")
 
     embed = discord.Embed(
         description="\n".join(desc_lines),
@@ -535,7 +536,7 @@ async def my_claims(interaction: discord.Interaction):
     )
 # وضع الصورة كآيكون جانبي
     if IMG_MY_CLAIMS_ICON:
-        embed.set_thumbnail(url=IMG_MY_CLAIMS_ICON)
+        embed.set_image(url=IMG_MY_CLAIMS_ICON)
 
     embed.set_footer(text="Wishlist • سرّك في بير")
 
