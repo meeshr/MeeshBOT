@@ -59,6 +59,8 @@ IMG_DELETE_ICON    = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/tra
 IMG_UNCLAIM_ICON   = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/cry.gif"
 IMG_CLEAR_ICON     = "https://raw.githubusercontent.com/meeshr/MeeshBOT/main/clean.gif"
 IMG_MY_CLAIMS_ICON = "https://github.com/meeshr/MeeshBOT/blob/main/1318-frogsparkles.gif?raw=true"
+IMG_cancel_ICON = "https://github.com/meeshr/MeeshBOT/blob/main/close-cancel.gif?raw=true"
+IMG_gift_ICON = "https://github.com/meeshr/MeeshBOT/blob/main/giphy.gif?raw=true"
 
 # ==========================================================
 # 5. الترقيم والإيموجيات
@@ -285,7 +287,7 @@ class MyClaimsManageView(View):
             embed = discord.Embed(
                 description=(
                     f"## 🔺 تم إلغاء الحجز \u200E\n"
-                    f"### تم إلغاء حجز الغرض {num_str} (**{target['name']}**)\n\n"
+                    f"### (**{target['name']}**) تم إلغاء حجز الغرض {num_str} \n\n"
                     "> صار الغرض متاحاً في القائمة من جديد للجميع"
                 ),
                 color=COLOR_MILK_TEA
@@ -324,13 +326,13 @@ class MyClaimsManageView(View):
         embed = discord.Embed(
             description=(
                 f"## 🔺 تم إلغاء جميع الحجوزات \u200E\n"
-                f"### تم إلغاء حجز **{count}** غرض دفعة واحدة بنجاح!\n\n"
+                f"### ! تم إلغاء حجز **{count}** غرض دفعة واحدة بنجاح\n\n"
                 "> أصبحت جميع الأغراض متاحة في قوائم صديقاتك"
             ),
             color=COLOR_MILK_TEA
         )
-        if IMG_CLEAR_ICON:
-            embed.set_thumbnail(url=IMG_CLEAR_ICON)
+        if IMG_cancel_ICON:
+            embed.set_thumbnail(url=IMG_cancel_ICON)
         embed.set_footer(text="Wishlist • سرّك في بير")
 
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -622,11 +624,11 @@ async def my_claims(interaction: discord.Interaction):
     # في حال لم يتم حجز أي غرض بعد
     if not my_claimed_items:
         embed_empty = discord.Embed(
-            description=f"## \u200F{EMOJI_SPARKLE} ما حجزتي شيء بعد\n### \u200Fتصفحي قوائم صديقاتك واحجزي أغراض تسعدهم!",
+            description=f"## \u200F ما حجزتي شيء بعد\n### \u200F!تصفحي قوائم صديقاتك واحجزي أغراض تسعدهم",
             color=COLOR_CREAM
         )
-        if IMG_EMPTY_ICON:
-            embed_empty.set_image(url=IMG_EMPTY_ICON)
+        if IMG_gift_ICON:
+            embed_empty.set_image(url=IMG_gift_ICON)
         embed_empty.set_footer(text="Wishlist • سرّك في بير")
         await interaction.response.send_message(embed=embed_empty, ephemeral=True)
         return
@@ -641,7 +643,7 @@ async def my_claims(interaction: discord.Interaction):
         num_str = format_item_num(item["id"])
         item_text = f"[{item['name']}]({item['url']})" if item["url"] else item["name"]
         img_text = f" • [صورة]({item['img']})" if item["img"] else ""
-        desc_lines.append(f"• \u200Fالغرض {num_str}: **{item_text}**{img_text}\n  > \u200F: {item['friend']} لـ\n")
+        desc_lines.append(f"• \u200Fالغرض {num_str}: **{item_text}**{img_text}\n  > \u200F: {item['friend']} لـ \n")
 
     desc_lines.append("\n\u200F🔻 **للإلغاء:** اختاري الغرض من القائمة تحت، أو اضغطي زر إلغاء الكل مباشرة.")
 
