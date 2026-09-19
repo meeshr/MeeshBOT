@@ -304,7 +304,7 @@ class MyClaimsManageView(View):
         else:
             await interaction.response.send_message("تعذر إلغاء الحجز، قد يكون تم تعديل الغرض مسبقاً", ephemeral=True)
 
-    @button(label="إلغاء حجز الكل مباشرة", style=discord.ButtonStyle.danger, emoji="💥", row=1)
+    @button(label="إلغاء حجز الكل مباشرة", style=discord.ButtonStyle.danger, emoji="🚫", row=1)
     async def cancel_all_btn(self, interaction: discord.Interaction, button: Button):
         await self.process_unclaim_all(interaction)
 
@@ -332,7 +332,7 @@ class MyClaimsManageView(View):
             color=COLOR_MILK_TEA
         )
         if IMG_cancel_ICON:
-            embed.set_thumbnail(url=IMG_cancel_ICON)
+            embed.set_image(url=IMG_cancel_ICON)
         embed.set_footer(text="Wishlist • سرّك في بير")
 
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -624,7 +624,7 @@ async def my_claims(interaction: discord.Interaction):
     # في حال لم يتم حجز أي غرض بعد
     if not my_claimed_items:
         embed_empty = discord.Embed(
-            description=f"## \u200F ما حجزتي شيء بعد\n### \u200F!تصفحي قوائم صديقاتك واحجزي أغراض تسعدهم",
+            description=f"## \u200F ما حجزتي شيء بعد\n### \u200F تصفحي قوائم صديقاتك واحجزي أغراض تسعدهم",
             color=COLOR_CREAM
         )
         if IMG_gift_ICON:
