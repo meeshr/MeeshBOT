@@ -197,17 +197,16 @@ class ClaimWishView(View):
                     child.disabled = True
                     child.label = BTN_CLAIMED_TEXT.format(num=num_str)
                     child.emoji = discord.PartialEmoji.from_str(EMOJI_LOCK)
-                    child.style = discord.ButtonStyle.secondary
+                    child.style = discord.ButtonStyle.secondary            
+                    
+            await interaction.response.edit_message(view=self)
             
-
-             await interaction.response.edit_message(view=self)
-
             embed_success = discord.Embed(
                 description=(
                     "## تم الحجز بنجاح\n"
                     f"### صار لك الغرض {num_str}\n\n"
-                    f"### \u200Fلـ: **{self.friend_name}**\n\n"
-                    f"### \u200F **{target['name']} :الغرض**"
+                    f"> \u202A**{self.friend_name}**لـ:\u202C\n\n "
+                    f"**الغرض:** {target['name']}"
                 ),
                 color=COLOR_COZY_BROWN
             )
