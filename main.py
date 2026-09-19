@@ -199,7 +199,6 @@ class ClaimWishView(View):
                     child.emoji = discord.PartialEmoji.from_str(EMOJI_LOCK)
                     child.style = discord.ButtonStyle.secondary
             
-            await interaction.response.edit_message(view=self)
 
              await interaction.response.edit_message(view=self)
 
