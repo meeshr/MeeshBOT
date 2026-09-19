@@ -600,41 +600,41 @@ async def clear_wishes(interaction: discord.Interaction):
     embed.set_footer(text="Wishlist")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-@bot.tree.command(name="my_claims", description="عرض الأغراض التي قمتِ بحجزها من قوائم صديقاتك")
+@bot.tree.command(name="my_claims", description="عرض وإدارة الأغراض التي قمتِ بحجزها من قوائم صديقاتك")
 async def my_claims(interaction: discord.Interaction):
     user_name = interaction.user.display_name
     my_claimed_items = []
 
     # البحث في جميع القوائم عن الأغراض المحجوزة باسم المستخدم الحالي
-    # البحث في جميع القوائم عن الأغراض المحجوزة
     for friend_id, items in wishes_db.items():
-        # ديسكورد سيحول المنشن تلقائياً لاسم العضوة الحقيقي
         friend_mention = f"<@{friend_id}>"
-        
         for itm in items:
             if itm.get("claimed") and itm.get("claimed_by") == user_name:
                 my_claimed_items.append({
                     "id": itm["id"],
+                    "friend_id": friend_id,
                     "name": itm["name"],
                     "url": itm.get("item_url"),
                     "img": itm.get("image_url"),
                     "friend": friend_mention
                 })
+
     # في حال لم يتم حجز أي غرض بعد
     if not my_claimed_items:
         embed_empty = discord.Embed(
             description=f"## \u200F{EMOJI_SPARKLE} ما حجزتي شيء بعد\n### \u200Fتصفحي قوائم صديقاتك واحجزي أغراض تسعدهم!",
             color=COLOR_CREAM
         )
-        if IMG_UNCLAIM_ICON:
-            embed_empty.set_image(url=IMG_UNCLAIM_ICON)
+        if IMG_EMPTY_ICON:
+            embed_empty.set_thumbnail(url=IMG_EMPTY_ICON)
+        embed_empty.set_footer(text="Wishlist • سرّك في بير")
         await interaction.response.send_message(embed=embed_empty, ephemeral=True)
         return
 
     # بناء نص الرسالة للأغراض المحجوزة
     desc_lines = [
-        f"## {EMOJI_flowerpink} الأغراض اللي حجزتيها \u200E",
-        "### : قائمة بكل الأغراض المحجوزة تحت اسمك\n"
+        f"## {EMOJI_HEART} الأغراض اللي حجزتيها \u200E",
+        "### قائمة بكل الأغراض المحجوزة تحت اسمك:\n"
     ]
 
     for item in my_claimed_items:
@@ -643,17 +643,19 @@ async def my_claims(interaction: discord.Interaction):
         img_text = f" • [صورة]({item['img']})" if item["img"] else ""
         desc_lines.append(f"• \u200Fالغرض {num_str}: **{item_text}**{img_text}\n  > \u200Fلـ: {item['friend']}\n")
 
+    desc_lines.append("\n\u200F🔻 **للإلغاء:** اختاري الغرض من القائمة تحت، أو اضغطي زر إلغاء الكل مباشرة.")
+
     embed = discord.Embed(
         description="\n".join(desc_lines),
         color=COLOR_SOFT_BLUSH
     )
-# وضع الصورة كآيكون جانبي
     if IMG_MY_CLAIMS_ICON:
-        embed.set_image(url=IMG_MY_CLAIMS_ICON)
+        embed.set_thumbnail(url=IMG_MY_CLAIMS_ICON)
 
     embed.set_footer(text="Wishlist • سرّك في بير")
 
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    view = MyClaimsManageView(user_name=user_name, claimed_items=my_claimed_items)
+    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
     
 # ==========================================================
 # 10. تشغيل الويب سيرفر والبوت معاً
