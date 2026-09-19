@@ -81,7 +81,7 @@ EMOJI_LOCK        = "<:822050lock:1547911158525071452>"
 EMOJI_TULIP       = "<:26725tulip:1547911001289261096>"
 EMOJI_CLOSE       = "<:814373redtick:1547911458229194772>"
 EMOJI_HEART       = "<:7443pinkheart:1547911767684808745>"
-EMOJI_flowerpink  = <:3214flowerpink:1550668178508615711>
+EMOJI_flowerpink  = "<:3214flowerpink:1550668178508615711>"
 
 WELCOME_MESSAGE = f"""## سجلي هنا كل شيء يعجبك، خاطرك فيه، أو تفكرين تشترينه
 
@@ -221,6 +221,119 @@ class ClaimWishView(View):
             await interaction.followup.send(embed=embed_success, ephemeral=True)
 
         return callback
+
+class MyClaimsManageView(View):
+    def __init__(self, user_name: str, claimed_items: list):
+        super().__init__(timeout=180)
+        self.user_name = user_name
+        self.claimed_items = claimed_items
+
+        # إعداد خيارات القائمة المنسدلة
+        options = [
+            discord.SelectOption(
+                label="إلغاء حجز كل الأغراض دفعة واحدة",
+                value="all",
+                description="إتاحة جميع أغراضك المحجوزة للبنات من جديد",
+                emoji="🗑️"
+            )
+        ]
+
+        # إضافة كل غرض كخيار مستقل (بحد أقصى 24 خياراً)
+        for itm in claimed_items[:24]:
+            num_str = format_item_num(itm["id"])
+            short_name = (itm["name"][:25] + "..") if len(itm["name"]) > 25 else itm["name"]
+            options.append(
+                discord.SelectOption(
+                    label=f"الغرض {num_str}: {short_name}",
+                    value=f"{itm['friend_id']}_{itm['id']}",
+                    description=f"إلغاء حجز هذا الغرض فقط",
+                    emoji="🔺"
+                )
+            )
+
+        select = discord.ui.Select(
+            placeholder="اختاري غرضاً لإلغائه أو حددي الكل...",
+            options=options,
+            min_values=1,
+            max_values=1
+        )
+        select.callback = self.select_callback
+        self.add_item(select)
+
+    async def select_callback(self, interaction: discord.Interaction):
+        selected_value = interaction.data["values"][0]
+
+        # خيار إلغاء حجز الكل
+        if selected_value == "all":
+            await self.process_unclaim_all(interaction)
+            return
+
+        # إلغاء حجز غرض محدد
+        friend_id_str, item_id_str = selected_value.split("_")
+        friend_id = int(friend_id_str)
+        item_id = int(item_id_str)
+
+        items = wishes_db.get(friend_id, [])
+        target = next((i for i in items if i["id"] == item_id), None)
+
+        if target and target.get("claimed") and target.get("claimed_by") == self.user_name:
+            target["claimed"] = False
+            target["claimed_by"] = None
+            await save_db_async(wishes_db)
+
+            num_str = format_item_num(item_id)
+            embed = discord.Embed(
+                description=(
+                    f"## 🔺 تم إلغاء الحجز \u200E\n"
+                    f"### تم إلغاء حجز الغرض {num_str} (**{target['name']}**)\n\n"
+                    "> صار الغرض متاحاً في القائمة من جديد للجميع"
+                ),
+                color=COLOR_MILK_TEA
+            )
+            if IMG_UNCLAIM_ICON:
+                embed.set_thumbnail(url=IMG_UNCLAIM_ICON)
+            embed.set_footer(text="Wishlist • سرّك في بير")
+            
+            # تعطيل القائمة المنسدلة بعد التنفيذ
+            for child in self.children:
+                child.disabled = True
+            await interaction.response.edit_message(view=self)
+            await interaction.followup.send(embed=embed, ephemeral=True)
+        else:
+            await interaction.response.send_message("تعذر إلغاء الحجز، قد يكون تم تعديل الغرض مسبقاً", ephemeral=True)
+
+    @button(label="إلغاء حجز الكل مباشرة", style=discord.ButtonStyle.danger, emoji="💥", row=1)
+    async def cancel_all_btn(self, interaction: discord.Interaction, button: Button):
+        await self.process_unclaim_all(interaction)
+
+    async def process_unclaim_all(self, interaction: discord.Interaction):
+        count = 0
+        for friend_id, items in wishes_db.items():
+            for itm in items:
+                if itm.get("claimed") and itm.get("claimed_by") == self.user_name:
+                    itm["claimed"] = False
+                    itm["claimed_by"] = None
+                    count += 1
+
+        await save_db_async(wishes_db)
+
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(view=self)
+
+        embed = discord.Embed(
+            description=(
+                f"## 🔺 تم إلغاء جميع الحجوزات \u200E\n"
+                f"### تم إلغاء حجز **{count}** غرض دفعة واحدة بنجاح!\n\n"
+                "> أصبحت جميع الأغراض متاحة في قوائم صديقاتك"
+            ),
+            color=COLOR_MILK_TEA
+        )
+        if IMG_CLEAR_ICON:
+            embed.set_thumbnail(url=IMG_CLEAR_ICON)
+        embed.set_footer(text="Wishlist • سرّك في بير")
+
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 # ==========================================================
 # 8. البوت والأحداث
