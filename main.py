@@ -533,15 +533,14 @@ async def my_claims(interaction: discord.Interaction):
         description="\n".join(desc_lines),
         color=COLOR_SOFT_BLUSH
     )
-
-    # وضع الصورة كآيكون جانبي
+# وضع الصورة كآيكون جانبي
     if IMG_MY_CLAIMS_ICON:
         embed.set_thumbnail(url=IMG_MY_CLAIMS_ICON)
 
-    embed.set_footer(text="Wishlist •)
+    embed.set_footer(text="Wishlist • سرّك في بير")
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
-
+    
 # ==========================================================
 # 10. تشغيل الويب سيرفر والبوت معاً
 # ==========================================================
