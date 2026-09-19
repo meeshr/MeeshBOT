@@ -210,12 +210,17 @@ class ClaimWishView(View):
                 ),
                 color=COLOR_COZY_BROWN
             )
-            if IMG_CLAIM_DEFAULT:
+
+            # تحديد الصورة
+            item_pic = target.get("image_url")
+            if item_pic and str(item_pic).strip().startswith("http"):
+                embed_success.set_image(url=str(item_pic).strip())
+            elif IMG_CLAIM_DEFAULT:
                 embed_success.set_image(url=IMG_CLAIM_DEFAULT)
 
-    embed.set_footer(text="Wishlist • سرّك في بير")
-    await interaction.followup.send(embed=embed_success, ephemeral=True)
-    
+            embed_success.set_footer(text="Wishlist • سرّك في بير")
+            await interaction.followup.send(embed=embed_success, ephemeral=True)
+
         return callback
 
 # ==========================================================
